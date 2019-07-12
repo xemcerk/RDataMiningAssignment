@@ -1,0 +1,20 @@
+---
+title: "AsssignmentReport"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+Since the significance of the knowledge about the edibility of mushroom, we believe it's necessary to extract meaningful infomation from the mushrooom dataset.This data set includes descriptions of hypothetical samples corresponding to 23 species of gilled mushrooms in the Agaricus and Lepiota Family.Each species is identified as edible or poisonous.This report mainly focus on the analysis of Mushroom dataset, including some static analysis in data exploration part, and association rules mining in data analysis part. 
+
+## Data Exploration
+
+
+
+## Data Analysis:Association Rules Mining
+
+
+## Conclusion

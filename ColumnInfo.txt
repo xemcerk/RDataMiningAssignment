@@ -1,0 +1,66 @@
+1. cap-shape: bell=b,conical=c,convex=x,flat=f, knobbed=k,sunken=s
+1. 菌盖形状: 钟形=b,锥形=c,凸形=x,平形=f, 把手形=k,凹陷形=s
+
+2. cap-surface: fibrous=f,grooves=g,scaly=y,smooth=s 
+2. 菌盖表面: 纤维=f,凹槽=g,有鳞的=y,平滑=s
+
+3. cap-color: brown=n,buff=b,cinnamon=c,gray=g,green=r, pink=p,purple=u,red=e,white=w,yellow=y
+3.菌盖颜色: 棕色=n,浅黄色=b,肉桂色=c,灰色=g,绿色=r, 粉色=p,紫色=u,红色=e,白色=w,黄色=y
+
+4. bruises?: bruises=t,no=f
+4. 瘀印?: 有=t,无=f
+
+5. odor: almond=a,anise=l,creosote=c,fishy=y,foul=f, musty=m,none=n,pungent=p,spicy=s
+5. 气味: 杏仁味=a,茴香味=l,杂酚油味=c,腥味=y,恶臭味=f, 发霉味=m,无味=n,呛鼻味=p,辛辣味=s
+
+6. gill-attachment: attached=a,descending=d,free=f,notched=n
+6. 菌褶附着物: 有附着=a,下垂=d,无附着=f,带缺口=n
+
+7. gill-spacing: close=c,crowded=w,distant=d
+7. 菌褶间距: 较近=c,拥挤=w,较远=d
+
+8. gill-size: broad=b,narrow=n
+8. 菌褶大小: 宽=b,窄=n
+
+9. gill-color: black=k,brown=n,buff=b,chocolate=h,gray=g, green=r,orange=o,pink=p,purple=u,red=e, white=w,yellow=y
+9. 菌褶颜色: 黑色=k,棕色=n,浅黄色=b,巧克力色=h,灰色=g, 绿色=r,橙色=o,粉色=p,紫色=u,红色=e, 白色=w,黄色=y
+
+10. stalk-shape: enlarging=e,tapering=t
+10. 菌柄形状: 扩展形=e,尖细形=t
+
+11. stalk-root: bulbous=b,club=c,cup=u,equal=e, rhizomorphs=z,rooted=r,missing=?
+11. 菌柄根部: 球根=b,棒根=c,杯形根=u,匀称形根=e, 索状根=z,rooted=r,缺失值=?
+
+12. stalk-surface-above-ring: fibrous=f,scaly=y,silky=k,smooth=s
+12. 菌环以上的菌柄表面: 纤维状=f,有鳞的=y,柔滑=k,光滑=s
+
+13. stalk-surface-below-ring: fibrous=f,scaly=y,silky=k,smooth=s
+13. 菌环以下的菌柄表面: 纤维状=f,有鳞的=y,柔滑=k,光滑=s
+
+14. stalk-color-above-ring: brown=n,buff=b,cinnamon=c,gray=g,orange=o, pink=p,red=e,
+white=w,yellow=y
+14. 菌环以上的菌柄颜色: 棕色=n,浅黄色=b,肉桂色=c,灰色=g,橙色=o, 粉色=p,红色=e,白色=w,黄色=y
+
+15. stalk-color-below-ring: brown=n,buff=b,cinnamon=c,gray=g,orange=o, pink=p,red=e,white=w,yellow=y
+15. 菌环以下的菌柄颜色: 棕色=n,浅黄色=b,肉桂色=c,灰色=g,橙色=o, 粉色=p,红色=e,白色=w,黄色=y
+
+16. veil-type: partial=p,universal=u
+16. 菌幕类型: 部分=p,全局=u
+
+17. veil-color: brown=n,orange=o,white=w,yellow=y
+17. 菌幕颜色: 棕色=n,橙色=o,白色=w,黄色=y
+
+18. ring-number: none=n,one=o,two=t
+18. 菌环数量: none=n,one=o,two=t
+
+19. ring-type: cobwebby=c,evanescent=e,flaring=f,large=l, none=n,pendant=p,sheathing=s,zone=z
+19. 菌环类型: cobwebby=c,evanescent=e,flaring=f,large=l, none=n,pendant=p,sheathing=s,zone=z
+
+20. spore-print-color: black=k,brown=n,buff=b,chocolate=h,green=r, orange=o,purple=u,white=w,yellow=y
+20. 孢子印颜色: black=k,brown=n,buff=b,chocolate=h,green=r, orange=o,purple=u,white=w,yellow=y
+
+21. population: abundant=a,clustered=c,numerous=n, scattered=s,several=v,solitary=y
+21. 分布情况: 丰富=a,成簇=c,众多=n, 分散=s,数处=v,单独=y
+
+22. habitat: grasses=g,leaves=l,meadows=m,paths=p, urban=u,waste=w,woods=d
+22. 栖息地: 草地=g,树叶=l,草甸=m,路径=p, 城市=u,废墟=w,森林=d

@@ -1,6 +1,8 @@
 ---
 title: "AsssignmentReport"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -11,10 +13,52 @@ knitr::opts_chunk$set(echo = TRUE)
 Since the significance of the knowledge about the edibility of mushroom, we believe it's necessary to extract meaningful infomation from the mushrooom dataset.This data set includes descriptions of hypothetical samples corresponding to 23 species of gilled mushrooms in the Agaricus and Lepiota Family.Each species is identified as edible or poisonous.This report mainly focus on the analysis of Mushroom dataset, including some static analysis in data exploration part, and association rules mining in data analysis part. 
 
 ## Data Exploration
+Load the dataset at first.
+```{r}
+##load Mushroom dataset
+url <- "./data/mushroom/agaricus-lepiota.data"
+mushrooms <- read.csv(file = url, header = FALSE)
+names(mushrooms) <- c("class", "cap-shape", "cap-surface",
+                      "cap-color", "bruises", "odor", "gill-attachment", "gill-spacing",
+                      "gill-size", "gill-color", "stalk-shape", "stalk-root",
+                      "stalk-surface-above-ring", "stalk-surface-below-ring",
+                      "stalk-color-above-ring", "stalk-color-below-ring",
+                      "veil-type", "veil-color", "ring-number", "ring-type",
+                      "spore-print-color", "population", "habitat")
+```
 
-
+Then check out the dimensionality of the dataset.
+```{r}
+dim(mushrooms)
+```
+And its column names.
+```{r}
+names(mushrooms)
+```
+We can further explore these colunms.
+```{r}
+str(mushrooms)
+```
+In order to know the split of between edible mushrooms and poisonous ones in the dataset, we can plot a pie chart.
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+library(dplyr)
+tab <- mushrooms$class %>% table()
+precentages <- tab %>% prop.table() %>% round(3) * 100
+txt <- paste0(names(tab), '\n', precentages, '%')
+pie(tab, labels=txt)
+```
 
 ## Data Analysis:Association Rules Mining
-
+Now we use Apriori to mine association rules from mushroom dataset and inspect the first 12 rules.
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+library(arules)
+library(arulesViz)
+rules <- apriori(mushrooms, control = list(verbose=F),
+                 parameter = list(minlen=4, maxlen=5, confidence=1),
+                 appearance = list(rhs=c("class=p", "class=e"),
+                                   default="lhs"))
+quality(rules) <- round(quality(rules), digits=3)
+inspect(head(rules, 12))
+```
 
 ## Conclusion

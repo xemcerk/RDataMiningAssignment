@@ -28,16 +28,39 @@ precentages <- tab %>% prop.table() %>% round(3) * 100
 txt <- paste0(names(tab), '\n', precentages, '%')
 pie(tab, labels=txt)
 
+#plot a heat map of the similarity between samples
+#dist.matrix <- as.matrix(dist(mushrooms[,2:23]))
+#heatmap(dist.matrix)
+
 ##Mining association rules on dataset
 rules <- apriori(mushrooms, control = list(verbose=F),
-                 parameter = list(minlen=2, maxlen=5),
+                 parameter = list(minlen=4, maxlen=5, confidence=1),
                  appearance = list(rhs=c("class=p", "class=e"),
                                    default="lhs"))
 quality(rules) <- round(quality(rules), digits=3)
-rules.sorted <- sort(rules, by="confidence")
-inspect(head(rules.sorted, 12))
+
+rules.sorted.bylif <- sort(rules, by="lift")
+rulse.sorted.bysup <- sort(rules, by="support")
+inspect(head(rules.sorted.bylif, 20))
+
+attributes(rules.sorted.bylif)
+attributes(rules.sorted.bysup)
 
 plot(head(rules.sorted,n=20))
 head(rules.sorted,n=12) %>% plot(method="grouped")
 head(rules.sorted,n=12) %>% plot(method="graph",
                     control=list(layout=igraph::with_fr()))
+
+plot(rules, measure=c("support","lift"), shading = "confidence")
+plot(rules, method="matrix", measure="lift");
+
+#prune redundant rules
+subset.matrix <- is.subset(rules, rules)
+subset.matrix[lower.tri(subset.matrix, diag=T)] <- F
+redundant <- colSums(subset.matrix) >= 1
+rules.pruned <- rules[!redundant]
+rules.pruned %>% inspect() ## print rules
+
+attributes(rules.pruned)
+
+##use random forest to calculate feature importance

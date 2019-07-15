@@ -32,35 +32,34 @@ pie(tab, labels=txt)
 #dist.matrix <- as.matrix(dist(mushrooms[,2:23]))
 #heatmap(dist.matrix)
 
-##Mining association rules on dataset
+##Mine association rules on dataset
+#Mine asscociation rules whose length range from 2 to 4
 rules <- apriori(mushrooms, control = list(verbose=F),
-                 parameter = list(minlen=4, maxlen=5, confidence=1),
+                 parameter = list(minlen=2, maxlen=5, confidence=1),
                  appearance = list(rhs=c("class=p", "class=e"),
                                    default="lhs"))
 quality(rules) <- round(quality(rules), digits=3)
-
-rules.sorted.bylif <- sort(rules, by="lift")
-rulse.sorted.bysup <- sort(rules, by="support")
-inspect(head(rules.sorted.bylif, 20))
-
-attributes(rules.sorted.bylif)
-attributes(rules.sorted.bysup)
-
-plot(head(rules.sorted,n=20))
-head(rules.sorted,n=12) %>% plot(method="grouped")
-head(rules.sorted,n=12) %>% plot(method="graph",
-                    control=list(layout=igraph::with_fr()))
-
-plot(rules, measure=c("support","lift"), shading = "confidence")
-plot(rules, method="matrix", measure="lift");
+#check out how many rules we get
+nrow(quality(rules))
 
 #prune redundant rules
 subset.matrix <- is.subset(rules, rules)
 subset.matrix[lower.tri(subset.matrix, diag=T)] <- F
 redundant <- colSums(subset.matrix) >= 1
 rules.pruned <- rules[!redundant]
-rules.pruned %>% inspect() ## print rules
+#check out how many rules left after pruning
+paste("The number of rules left after pruning is",nrow(quality(rules.pruned)))
 
-attributes(rules.pruned)
+#Sort rules by lift and support and inspect the first 8 ones.
+rules.pruned.sorted <- sort(rules.pruned, by=c("lift","support"))
+inspect(head(rules.pruned.sorted, 8))
 
-##use random forest to calculate feature importance
+#use a scatter plot to show how the rules are distributed
+plot(rules.pruned.sorted, measure=c("support","lift"))
+plot(rules.pruned.sorted, method="matrix", measure=c("support","lift"))
+
+#plot the graph of the rules to the association between them
+head(rules.pruned.sorted,n=8) %>% plot(method="graph",
+                    control=list(layout=igraph::in_circle()))
+
+#limit the rules' length to 2 and mine again

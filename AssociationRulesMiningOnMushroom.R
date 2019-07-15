@@ -48,7 +48,7 @@ subset.matrix[lower.tri(subset.matrix, diag=T)] <- F
 redundant <- colSums(subset.matrix) >= 1
 rules.pruned <- rules[!redundant]
 #check out how many rules left after pruning
-paste("The number of rules left after pruning is",nrow(quality(rules.pruned)))
+nrow(quality(rules.pruned))
 
 #Sort rules by lift and support and inspect the first 8 ones.
 rules.pruned.sorted <- sort(rules.pruned, by=c("lift","support"))
@@ -63,3 +63,12 @@ head(rules.pruned.sorted,n=8) %>% plot(method="graph",
                     control=list(layout=igraph::in_circle()))
 
 #limit the rules' length to 2 and mine again
+rules2 <- apriori(mushrooms, control = list(verbose=F),
+                 parameter = list(minlen=2, maxlen=2),
+                 appearance = list(rhs=c("class=p", "class=e"),
+                                   default="lhs"))
+quality(rules2) <- round(quality(rules2), digits=3)
+
+#sort by confidence, lift and support 
+rules2.sorted <- sort(rules2, by=c("confidence","lift","support"))
+inspect(head(rules2.sorted, 8))

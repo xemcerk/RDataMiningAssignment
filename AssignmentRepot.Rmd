@@ -10,10 +10,13 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Introduction
-Since the significance of the knowledge about the edibility of mushroom, we believe it's necessary to extract meaningful infomation from the mushrooom dataset.This data set includes descriptions of hypothetical samples corresponding to 23 species of gilled mushrooms in the Agaricus and Lepiota Family.Each species is identified as edible or poisonous.This report mainly focus on the analysis of Mushroom dataset, including some static analysis in data exploration part, and association rules mining in data analysis part. 
+
+  Since the significance of the knowledge about the edibility of mushroom, we believe it's necessary to extract meaningful infomation from the mushrooom dataset.This data set includes descriptions of hypothetical samples corresponding to 23 species of gilled mushrooms in the Agaricus and Lepiota Family.Each species is identified as edible or poisonous.This report mainly focus on the analysis of Mushroom dataset, including some static analysis in data exploration part, and association rules mining in data analysis part.  
 
 ## Data Exploration
-Load the dataset at first.
+
+  Load the dataset at first.
+
 ```{r}
 ##load Mushroom dataset
 url <- "./data/mushroom/agaricus-lepiota.data"
@@ -28,22 +31,27 @@ names(mushrooms) <- c("class", "cap-shape", "cap-surface",
                       "spore-print-color", "population", "habitat")
 ```
 
-Then check out the dimensionality of the dataset.There is 8124 samples and 23 features.
+  Then check out the dimensionality of the dataset.There is 8124 samples and 23 features.
+  
 ```{r}
 dim(mushrooms)
 ```
 
-And its column names.
+  And its column names.
+  
 ```{r}
 names(mushrooms)
 ```
 
-We can further explore these colunms.The first colunm indicates the edibility of the species.The remaining column is about various features of the species which covers different part of the mushroom from the cap to the root, and also describe the characteristics of the mushroom from different sensory levels, including vision, smell, touch, etc.Note that all the columns are factors.
+  <p>We can further explore these colunms.The first colunm indicates the edibility of the species.<br>
+  The remaining column is about various features of the species which covers different part of the mushroom from the cap to the root, and also describe the characteristics of the mushroom from different sensory levels, including vision, smell, touch, etc.Note that all the columns are factors.</p>
+  
 ```{r}
 str(mushrooms)
 ```
 
-In order to know the split of between edible mushrooms and poisonous ones in the dataset, we can plot a pie chart, from which we can see the dataset is quite balanced.
+  In order to know the split of between edible mushrooms and poisonous ones in the dataset, we can plot a pie chart, from which we can see the dataset is quite balanced.
+  
 ```{r fig.height=2.5, fig.width=2.5, message=FALSE, warning=FALSE, paged.print=FALSE}
 library(dplyr)
 tab <- mushrooms$class %>% table()
@@ -53,7 +61,9 @@ pie(tab, labels=txt)
 ```
 
 ## Data Analysis:Association Rules Mining
-Now we use Apriori to mine association rules.note that we limit the length to [2,5],and confidence=1 to filter out over complex rules and less reliable ones.And we can print the number of rules we get.
+
+  Now we use Apriori to mine association rules.Note that we limit the length to [2,5],and confidence=1 to filter out over complex rules and less reliable ones.And we can print the number of rules we get.
+  
 ```{r message=FALSE, warning=FALSE, paged.print=FALSE}
 library(arules)
 library(arulesViz)
@@ -64,8 +74,9 @@ rules <- apriori(mushrooms, control = list(verbose=F),
 quality(rules) <- round(quality(rules), digits=3)
 paste('The numer of rules we got is',nrow(quality(rules)))
 ```
-Before analysis, prune the redundant rules.
-## Conclusion
+  
+  Before analysis, prune the redundant rules.
+  
 ```{r}
 #prune redundant rules
 subset.matrix <- is.subset(rules, rules)
@@ -75,18 +86,63 @@ rules.pruned <- rules[!redundant]
 #check out how many rules left after pruning
 paste("The number of rules left after pruning is",nrow(quality(rules.pruned)))
 ```
-Now we can inspect the first 8 rules after sorting the rules by lift and support. 
+  
+  Now we can inspect the first 8 rules after sorting the rules by lift and support. 
+  
 ```{r}
 #Sort rules by lift and support and inspect the first 8 ones.
 rules.pruned.sorted <- sort(rules.pruned, by=c("lift","support"))
 inspect(head(rules.pruned.sorted, 8))
 ```
-And by using a scatter plot we can visualize the distribution of the rules.
-```{r}
+  
+  <p>As we can see,all the rules displayed has lift=2.075, which means mushrooms having these characteristics in the lhs will have 2 times more probability to become poisonous. <br>
+  And most of the rules has the length of 3 or 4, but the 2nd important rule has the length of 2, so we may speculate that the feature "odor" is rather significant to determine the edibility.</p>
+
+  And by using a scatter plot we can visualize the distribution of the rules.
+  
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
 plot(rules.pruned.sorted, measure=c("support","lift"))
 ```
-In order to further analyse the association between these 8 rules, we can visualize them by ploting a graph.
+  
+  Now we find an interesting phenomenon that basically all the rules has the lift of around 2.06 or 1.94, whereas the support of these rules varies.
+
+  In order to further analyse the association between these 8 rules, we can visualize them by ploting a graph.
+  
 ```{r fig.height=6, fig.width=6}
 #plot the graph of the rules to the association between them
 head(rules.pruned.sorted,n=8) %>% plot(method="graph",  control=list(layout=igraph::in_circle()))
 ```
+  
+  <p>By obserbing the number of out edges of each feature node, we know that spore-print-color=w, ring-number=0 are most frequently shown in lhs, which indicates these feature may be highly related to poisonous mushrooms.<br>  
+  And the size of the pink nodes represents the lift of a certain rule.So by taking that into consideration, stalk-surface-above-ring and gill-spacing may be more reliable indicators for edibility.</p>
+  
+  At last, we can study how well a single feature indicates the edibility by mining association rules of length=2.This time We don't limit the confident to be 1, otherwise there wouldn't be many rules left.
+  
+```{r}
+#limit the rules' length to 2 and mine again
+rules2 <- apriori(mushrooms, control = list(verbose=F),
+                 parameter = list(minlen=2, maxlen=2),
+                 appearance = list(rhs=c("class=p", "class=e"),
+                                   default="lhs"))
+quality(rules2) <- round(quality(rules2), digits=3)
+```
+  
+  Again we sort the rules by confidence, lift and support and print the top 8 rules.
+
+```{r}
+#sort by confidence, lift and support 
+rules2.sorted <- sort(rules2, by=c("confidence","lift","support"))
+inspect(head(rules2.sorted, 8))
+```
+  
+  The result validates the importance of feature odor, and gill-color=b and ringt-type=l are also strong indicators. As for gill-spacing and stalk-surface-above-ring, they are pretty well in the first-round analysis, but the result above shows that they are less reliable as an individual feature, they may work better when combined with other features. 
+  
+## Conclusion
+  
+  <p>To determine whether a mushroom is edible is fairly complicated, so we try to avoid concluding  a simple rule, since there is no such thing as a silver bullet.Instead we try to explore which feature may be more useful than others such as ordor, and understand the interaction of different features using visualization such as rules graph, under controled complexity.<br>
+  
+  Since we only use Apriori to mine association rules, the sight may be very limited.For further exploration, other methods can be exploited.<br>
+  
+  Also some classification methods can be applied to this dataset.Building a decision tree may bring more interesting and interpretable result, and it's also promising to use random forest to calculate the importance of each features.</p>  
+  
+
